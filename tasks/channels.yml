@@ -1,0 +1,37 @@
+---
+
+- name: Get repo list
+  shell: spacecmd -u admin -p p4ssw0rd! repo_list
+  register: repo_list
+
+- name: Create repos
+  shell: 'spacecmd -u admin -p p4ssw0rd! "repo_create --name \"{{ item.1.name }}\" --url {{ item.1.url }} --type {{ item.1.type | default("yum") }} "'
+  when: item.1.name not in repo_list.stdout_lines
+  with_subelements:
+    - '{{ spacewalk_software_channels }}'
+    - repos
+    - skip_missing: True
+
+- name: Get software channel list
+  shell: spacecmd -u admin -p p4ssw0rd! softwarechannel_list
+  register: software_channel_list
+
+- name: Create software_channel
+  shell: "spacecmd -u admin -p p4ssw0rd! \"softwarechannel_create -n '{{ item.name }}' -l {{ item.label }} {{ '-p %s' % item.parent if item.parent | default(False) else '' }} -a x86_64 -c sha512\""
+  when: item.label not in software_channel_list.stdout
+  with_items: '{{ spacewalk_software_channels }}'
+
+- name: Get channel repos
+  shell: 'spacecmd -u admin -p p4ssw0rd! softwarechannel_listrepos {{ item.label }}'
+  with_items: '{{ spacewalk_software_channels }}'
+  register: repo_channels
+
+- name: Add repos to channels
+  shell: 'spacecmd -u admin -p p4ssw0rd! \"softwarechannel_addrepo {{ item.key }} {{ item.1.name }}\"'
+  when: item.1.name not in item.result.stdout_lines
+  with_subelements:
+    - '{{ repo_channels.results }}'
+    - repos
+    - skip_missing: True
+
+

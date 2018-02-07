@@ -7,3 +7,6 @@
 
 - name: Install spacewalk
   command: spacewalk-setup --answer-file=/root/spacewalk-answer-file
+  args:
+    creates: /var/lib/pgsql
+
