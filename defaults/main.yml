@@ -29,6 +29,8 @@ spacewalk_java_repo_gpg_key: "https://copr-be.cloud.fedoraproject.org/results/@s
 spacewalk_pkgs:
   - spacewalk-setup-postgresql
   - spacewalk-postgresql
+  - spacecmd
+  - spacewalk-utils
 
 spacewalk_firewall:
   services:
