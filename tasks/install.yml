@@ -1,32 +1,29 @@
 ---
 
-- name: Ensure EPEL repo is present
-  yum:
-    name: "{{ epel_repo }}"
-    state: present
-
-- name: Enable optionals rpm repo for RedHat
-  command: "subscription-manager repos --enable rhel-{{ ansible_distribution_major_version }}-server-optional-rpms"
-  when: ansible_distribution == "RedHat"
-
-- name: Add spacewalk and Java packages repository
-  yum_repository:
-    name: "{{ item.repoid }}"
-    description: "{{ item.description }}"
-    baseurl: "{{ item.baseurl }}"
-    file: "{{ item.file }}"
-    enabled: "{{ item.enabled }}"
-    gpgcheck: "{{ item.gpgcheck }}"
-    gpgkey: "{{ item.gpgkey }}"
-    proxy: "{{ item.proxy }}"
-  with_items: "{{ spacewalk_repo }}"
-
-- name: Import spacewalk rpm gpg key
-  rpm_key:
-    key: "{{ item }}"
+- name: Add channel gpg keys
+  copy:
+    src: "RPM-GPG-KEY-{{ item }}"
+    dest: '/etc/pki/rpm-gpg/RPM-GPG-KEY-{{ item }}'
   with_items:
-    - "{{ spacewalk_gpg_key }}"
-    - "{{ spacewalk_java_repo_gpg_key }}"
+    - '{{ spacewalk_rhn_gpg_keys }}'
+
+- name: Import channel gpg keys
+  rpm_key:
+    state: present
+    key: '/etc/pki/rpm-gpg/RPM-GPG-KEY-{{ item }}'
+  with_items:
+    - '{{ spacewalk_rhn_gpg_keys }}'
+
+- name: Subscribe to required channels
+  rhn_channel:
+    name: '{{ item }}'
+    state: '{{ item.state | default("present") }}'
+    sysname: '{{ inventory_hostname }}'
+    url: 'https://{{ spacewalk_server }}/rpc/api'
+    user: '{{ spacewalk_admin_user }}'
+    password: '{{ spacewalk_admin_password }}'
+  with_items:
+    - '{{ spacewalk_rhn_channels }}'
 
 - name: Install spacewalk packages
   yum:

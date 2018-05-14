@@ -26,16 +26,31 @@ spacewalk_gpg_key: "http://yum.spacewalkproject.org/RPM-GPG-KEY-spacewalk-2015"
 spacewalk_java_repo_url: "https://copr-be.cloud.fedoraproject.org/results/@spacewalkproject/java-packages/epel-7-$basearch/"
 spacewalk_java_repo_gpg_key: "https://copr-be.cloud.fedoraproject.org/results/@spacewalkproject/java-packages/pubkey.gpg"
 
+spacewalk_rhn_channels:
+  - spacewalk-el7-x86_64
+  - spacewalk-java-packages-el7-x86_64
+  - epel-el7-x86_64
+
+spacewalk_rhn_gpg_keys:
+  - 'spacewalk-2015'
+  - 'spacewalk-java-packages'
+  - 'EPEL-7'
+
 spacewalk_pkgs:
   - spacewalk-setup-postgresql
   - spacewalk-postgresql
   - spacecmd
   - spacewalk-utils
+  - dhcp
+  - syslinux
+  - xinetd
 
 spacewalk_firewall:
   services:
     - "http"
     - "https"
+    - "tftp"
+    - "dhcp"
   ports:
     - "5222/tcp"
     - "5269/tcp"

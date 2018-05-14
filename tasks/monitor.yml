@@ -1,0 +1,30 @@
+---
+
+- name: Copy check scripts
+  template:
+    src: check_repodata.j2
+    dest: /usr/lib64/nagios/plugins/check_repodata
+    owner: root
+    group: root
+    mode: 0755
+
+- name: Copy check configuration
+  template:
+    src: check_repodata.cfg.j2
+    dest: /etc/nrpe.d/check_repodata.cfg
+    owner: nrpe
+    group: nagios
+    mode: 0644
+  notify:
+    - restart nrpe
+
+- name: Copy check configuration
+  template:
+    src: check_repodata.auth.j2
+    dest: /etc/nrpe.d/check_repodata.auth
+    owner: nrpe
+    group: nrpe
+    mode: 0600
+
+
+

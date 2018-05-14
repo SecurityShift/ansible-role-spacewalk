@@ -8,5 +8,13 @@
 - name: Install spacewalk
   command: spacewalk-setup --answer-file=/root/spacewalk-answer-file
   args:
-    creates: /var/lib/pgsql
+    creates: /var/lib/pgsql/data/pg_hba.conf
 
+- name: Enable tftpd
+  template:
+    src: tftpd.j2
+    dest: /etc/xinetd.d/tftp
+    owner: root
+    group: root
+    mode: 0644
+  notify: restart xinetd

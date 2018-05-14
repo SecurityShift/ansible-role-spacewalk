@@ -11,6 +11,7 @@
     service: "{{ item }}"
     immediate: true
     permanent: true
+    zone: public
     state: enabled
   with_items:
     - "{{ spacewalk_firewall.services }}"
@@ -21,6 +22,7 @@
     port: "{{ item }}"
     immediate: true
     permanent: true
+    zone: public
     state: enabled
   with_items:
     - "{{ spacewalk_firewall.ports }}"

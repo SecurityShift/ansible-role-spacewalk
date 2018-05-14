@@ -7,6 +7,14 @@
     - "{{ ansible_distribution }}.yml"
     - el.yml
 
+- name: Allow spacewalk to send email
+  seboolean:
+    name: nis_enabled
+    state: yes
+    persistent: yes
+  tags:
+    - selinux
+
 - include: install.yml
   tags: install
 
@@ -18,3 +26,6 @@
 
 - include: channels.yml
   tags: channels
+
+- include: monitor.yml
+  tags: monitoring
