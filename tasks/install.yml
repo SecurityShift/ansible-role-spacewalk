@@ -1,29 +1,11 @@
 ---
 
-- name: Add channel gpg keys
-  copy:
-    src: "RPM-GPG-KEY-{{ item }}"
-    dest: '/etc/pki/rpm-gpg/RPM-GPG-KEY-{{ item }}'
-  with_items:
-    - '{{ spacewalk_rhn_gpg_keys }}'
-
-- name: Import channel gpg keys
-  rpm_key:
-    state: present
-    key: '/etc/pki/rpm-gpg/RPM-GPG-KEY-{{ item }}'
-  with_items:
-    - '{{ spacewalk_rhn_gpg_keys }}'
-
 - name: Subscribe to required channels
-  rhn_channel:
-    name: '{{ item }}'
-    state: '{{ item.state | default("present") }}'
-    sysname: '{{ inventory_hostname }}'
-    url: 'https://{{ spacewalk_server }}/rpc/api'
-    user: '{{ spacewalk_admin_user }}'
-    password: '{{ spacewalk_admin_password }}'
-  with_items:
-    - '{{ spacewalk_rhn_channels }}'
+  import_role:
+    name: spacewalk-client
+    tasks_from: channel.yml
+  vars:
+    channels: '{{ spacewalk_rhn_channels }}'
 
 - name: Install spacewalk packages
   yum:

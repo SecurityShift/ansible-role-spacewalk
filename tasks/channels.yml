@@ -3,37 +3,49 @@
 - name: Get repo list
   shell: 'spacecmd -u {{ spacewalk_admin_user }} -p {{ spacewalk_admin_password }} repo_list'
   register: repo_list
+  check_mode: no
   changed_when: False
+  tags:
+    - channels
 
 - name: Create repos
   shell: 'spacecmd -u {{ spacewalk_admin_user }} -p {{ spacewalk_admin_password }} "repo_create --name \"{{ item.1.name }}\" --url {{ item.1.url }} --type {{ item.1.type | default("yum") }} "'
-  when: item.1.name not in repo_list.stdout_lines
+  when: item.1.url is defined and item.1.name not in repo_list.stdout_lines
   with_subelements:
     - '{{ spacewalk_software_channels }}'
     - repos
     - skip_missing: True
+  tags:
+    - channels
 
 - name: Get software channel list
   shell: spacecmd -u {{ spacewalk_admin_user }} -p {{ spacewalk_admin_password }} softwarechannel_list
   register: software_channel_list
+  check_mode: no
   changed_when: False
+  tags:
+    - channels
 
 - name: Create software_channel
-  shell: "spacecmd -u {{ spacewalk_admin_user }} -p {{ spacewalk_admin_password }} \"softwarechannel_create -n '{{ item.name }}' -l {{ item.label }} {{ '-p %s' % item.parent if item.parent | default(False) else '' }} -a x86_64 -c sha512\""
-  when: item.label not in software_channel_list.stdout
-  with_items: '{{ spacewalk_software_channels }}'
+  shell: "spacecmd -u {{ spacewalk_admin_user }} -p {{ spacewalk_admin_password }} \"softwarechannel_create -n '{{ item.name }}' -l {{ item.key }} {{ '-p %s' % item.parent if item.parent | default(False) else '' }} -a x86_64 -c sha512\""
+  when: item.key not in software_channel_list.stdout
+  with_dict: '{{ spacewalk_software_channels }}'
+  tags:
+    - channels
 
-  #- name: Get channel repos
-  #shell: 'spacecmd -u {{ spacewalk_admin_user }} -p {{ spacewalk_admin_password }} softwarechannel_listrepos {{ item.label }}'
-  #with_items: '{{ spacewalk_software_channels }}'
-  #register: repo_channels
+- name: Get channel repos
+  shell: 'spacecmd -u {{ spacewalk_admin_user }} -p {{ spacewalk_admin_password }} softwarechannel_listrepos {{ item.key }}'
+  with_dict: '{{ spacewalk_software_channels }}'
+  check_mode: no
+  changed_when: False
+  register: repo_channels
 
-  #- name: Add repos to channels
-  #shell: 'spacecmd -u {{ spacewalk_admin_user }} -p {{ spacewalk_admin_password }} \"softwarechannel_addrepo {{ item.key }} {{ item.1.name }}\"'
-  #when: item.1.name not in item.result.stdout_lines
-  #with_subelements:
-  #  - '{{ repo_channels.results }}'
-  #  - repos
-  #  - skip_missing: True
-
+# FIXME
+#- name: Add repos to channels
+#  shell: 'spacecmd -u {{ spacewalk_admin_user }} -p {{ spacewalk_admin_password }} \"softwarechannel_addrepo {{ item.key }} {{ item.1.name }}\"'
+#  when: item.1.name not in item.result.stdout_lines
+#  with_subelements:
+#    - '{{ repo_channels.results }}'
+#    - repos
+#    - skip_missing: True
 

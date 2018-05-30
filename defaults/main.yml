@@ -31,11 +31,6 @@ spacewalk_rhn_channels:
   - spacewalk-java-packages-el7-x86_64
   - epel-el7-x86_64
 
-spacewalk_rhn_gpg_keys:
-  - 'spacewalk-2015'
-  - 'spacewalk-java-packages'
-  - 'EPEL-7'
-
 spacewalk_pkgs:
   - spacewalk-setup-postgresql
   - spacewalk-postgresql
