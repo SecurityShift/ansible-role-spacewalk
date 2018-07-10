@@ -52,14 +52,14 @@ spacewalk_firewall:
 
 # Spacewalk answer file variables for non-interactive install
 spacewalk_answers:
-  - admin-email = root@localhost
+  - admin-email = {{ admin_email }}
   - ssl-set-org = O
   - ssl-set-org-unit = OU
   - ssl-set-city = L
   - ssl-set-state = P
   - ssl-set-country = US
   - ssl-password = s3cret
-  - ssl-set-email = root@localhost
+  - ssl-set-email = {{ admin_email }}
   - ssl-config-sslvhost = Y
   - db-backend=postgresql
   - db-name=spacewalk
@@ -68,3 +68,5 @@ spacewalk_answers:
   - db-host=localhost
   - db-port=5432
   - enable-tftp=Y
+
+spacewalk_errata_user: errataimport

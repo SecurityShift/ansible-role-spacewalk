@@ -9,8 +9,8 @@
     - channels
 
 - name: Create repos
-  shell: 'spacecmd -u {{ spacewalk_admin_user }} -p {{ spacewalk_admin_password }} "repo_create --name \"{{ item.1.name }}\" --url {{ item.1.url }} --type {{ item.1.type | default("yum") }} "'
-  when: item.1.url is defined and item.1.name not in repo_list.stdout_lines
+  shell: 'spacecmd -u {{ spacewalk_admin_user }} -p {{ spacewalk_admin_password }} "repo_create --name \"{{ item.1.description }}\" --url {{ item.1.url }} --type {{ item.1.type | default("yum") }} "'
+  when: item.1.url is defined and item.1.description not in repo_list.stdout_lines
   with_subelements:
     - '{{ spacewalk_software_channels }}'
     - repos
