@@ -7,6 +7,9 @@
     owner: root
     group: root
     mode: 0755
+  tags:
+    - nrpe
+    - monitoring
 
 - name: Copy check configuration
   template:
@@ -17,6 +20,9 @@
     mode: 0644
   notify:
     - restart nrpe
+  tags:
+    - nrpe
+    - monitoring
 
 - name: Copy check configuration
   template:
@@ -25,6 +31,7 @@
     owner: nrpe
     group: nrpe
     mode: 0600
-
-
+  tags:
+    - nrpe
+    - monitoring
 

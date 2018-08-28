@@ -1,4 +1,4 @@
 # {{ ansible_managed }}
-# See {{ icinga_agent_role_git_repo }}/blob/master/templates/check_repodata.cfg.j2
+# See {{ spacewalk_role_git_repo }}/blob/master/templates/check_repodata.cfg.j2
 
 command[check_repodata]=/usr/lib64/nagios/plugins/check_repodata -e -o -w 48 -c 72 -a /etc/nrpe.d/check_repodata.auth
