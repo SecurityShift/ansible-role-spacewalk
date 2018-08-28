@@ -1,6 +1,8 @@
 ---
 # defaults file for spacewalk
 
+spacewalk_agent_role_git_repo: https://github.com/SecurityShift/ansible-role-icinga-agent
+
 spacewalk_repo:
   - repoid: spacewalk
     description: "Spacewalk"
