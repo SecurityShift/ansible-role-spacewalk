@@ -27,7 +27,7 @@
     - channels
 
 - name: Create software_channel
-  shell: "spacecmd -u {{ spacewalk_admin_user }} -p {{ spacewalk_admin_password }} \"softwarechannel_create -n '{{ item.name }}' -l {{ item.key }} {{ '-p %s' % item.parent if item.parent | default(False) else '' }} -a x86_64 -c sha512\""
+  shell: "spacecmd -u {{ spacewalk_admin_user }} -p {{ spacewalk_admin_password }} \"softwarechannel_create -n '{{ item.value.name }}' -l {{ item.key }} {{ '-p %s' % item.value.parent if item.value.parent | default(False) else '' }} -a x86_64 -c sha512\""
   when: item.key not in software_channel_list.stdout
   with_dict: '{{ spacewalk_software_channels }}'
   tags:
