@@ -13,3 +13,14 @@
     state: present
   with_items:
     - "{{ spacewalk_pkgs }}"
+
+- name: Add selinux module for spacewalk
+  import_role:
+    name: selinux
+    tasks_from: module.yml
+  vars:
+    selinux_module: spacewalk_local
+  tags:
+    - nrpe
+    - selinux
+
