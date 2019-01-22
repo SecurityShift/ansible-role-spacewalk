@@ -7,6 +7,14 @@
     - "{{ ansible_distribution }}.yml"
     - el.yml
 
+- name: Allow spacewalk to connect to db
+  seboolean:
+    name: tomcat_can_network_connect_db
+    state: yes
+    persistent: yes
+  tags:
+    - selinux
+
 - name: Allow spacewalk to send email
   seboolean:
     name: nis_enabled
